@@ -29,5 +29,5 @@ stages:
         script: 'ls'
     - task: CmdLine@2
       inputs:
-        script: 'kubectl create -f deployment.yml'
+        script: 'kubectl create -f ./deployment.yml'
 
