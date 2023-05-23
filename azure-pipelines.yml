@@ -27,8 +27,7 @@ stages:
     - task: CmdLine@2
       inputs:
         script: 'ls'
-    - task: oc-cmd@3
+    - task: CmdLine@2
       inputs:
-        connectionType: 'OpenShift Connection Service'
-        openshiftService: 'openshift-3'
-        cmd: 'kubectl create -f manifest/deployment.yml'
+        script: 'kubectl create -f deployment.yml'
+
