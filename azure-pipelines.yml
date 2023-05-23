@@ -22,7 +22,7 @@ stages:
 
     - task: CmdLine@2
       inputs:
-        script: 'cd manifests'
+        script: 'cd mslearn-tailspin-spacegame-web-kubernetes/manifests'
     
     - task: CmdLine@2
       inputs:
