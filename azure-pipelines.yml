@@ -1,13 +1,6 @@
 trigger:
 - 'master'
 
-variables:
-  buildConfiguration: 'Release'
-  leaderboardRepository: 'leaderboard'
-  webRepository: 'web'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'secret'
-
 stages:
 - stage: 'Build'
   displayName: 'Build and push'
@@ -15,67 +8,16 @@ stages:
   - job: 'Build'
     displayName: 'Build job'
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-latest'
     steps:
-    - task: Docker@2
-      displayName: 'Build and push the image to container registry'
+    - checkout: git:https://github.com/iam-aravind/mslearn-tailspin-spacegame-web-kubernetes.git
+    - task: oc-cmd@3
       inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(webRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
-        tags: |
-          $(tag)
-    - task: Docker@2
-      displayName: 'Build and push the leaderboard image to container registry'
+        connectionType: 'OpenShift Connection Service'
+        openshiftService: 'openshift-3'
+        cmd: 'oc login --token=sha256~yFvdvdA9HHbtDgjPwV3ka8yzDnxRwXWqAlEbuvPEgZU --server=https://api.sandbox-m2.ll9k.p1.openshiftapps.com:6443'
+    - task: oc-cmd@3
       inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(leaderboardRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
-        tags: |
-          $(tag)
-    - publish: '$(Build.SourcesDirectory)/manifests'
-      artifact: manifests
-
-- stage: 'Deploy'
-  displayName: 'Deploy the containers'
-  dependsOn: Build
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    pool:
-      vmImage: 'ubuntu-18.04'
-    environment: 'spike.default'
-    variables:
-    - group: Release
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: manifests
-          - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
-            inputs:
-              action: createSecret
-              secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: 'Container Registry Connection'
-              kubernetesServiceConnection: 'Kubernetes Cluster Connection'
-              namespace: 'default'            
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'Kubernetes Cluster Connection'
-              namespace: 'default'
-              manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yml
-                $(Pipeline.Workspace)/manifests/service.yml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                $(RegistryName)/$(webRepository):$(tag)
-                $(RegistryName)/$(leaderboardRepository):$(tag)
+        connectionType: 'OpenShift Connection Service'
+        openshiftService: 'openshift-3'
+        cmd: 'oc apply -f ./manifests/deployment.yml'
