@@ -31,4 +31,4 @@ stages:
       inputs:
         connectionType: 'OpenShift Connection Service'
         openshiftService: 'openshift-3'
-        cmd: 'oc apply -f deployment.yml'
+        cmd: 'oc apply -f manifest/deployment.yml'
