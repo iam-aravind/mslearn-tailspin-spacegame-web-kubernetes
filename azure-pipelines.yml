@@ -1,13 +1,6 @@
 trigger:
 - 'master'
 
-variables:
-  buildConfiguration: 'Release'
-  leaderboardRepository: 'leaderboard'
-  webRepository: 'web'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'secret'
-
 stages:
 - stage: 'Build'
   displayName: 'Build and push'
@@ -17,28 +10,6 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: Docker@2
-      displayName: 'Build and push the image to container registry'
-      inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(webRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
-        tags: |
-          $(tag)
-    - task: Docker@2
-      displayName: 'Build and push the leaderboard image to container registry'
-      inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(leaderboardRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
-        tags: |
-          $(tag)
-    - publish: '$(Build.SourcesDirectory)/manifests'
-      artifact: manifests
     - task: CmdLine@2
       inputs:
         script: 'git clone https://github.com/iam-aravind/mslearn-tailspin-spacegame-web-kubernetes.git'
