@@ -10,7 +10,9 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - checkout: self
+    - task: CmdLine@2
+      inputs:
+        script: 'git clone https://github.com/iam-aravind/mslearn-tailspin-spacegame-web-kubernetes.git'
     - task: oc-cmd@3
       inputs:
         connectionType: 'OpenShift Connection Service'
