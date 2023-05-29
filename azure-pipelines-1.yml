@@ -10,6 +10,9 @@ stages:
     pool:
      vmImage: 'ubuntu-latest'
     steps:
+    - task: CmdLine@2
+      inputs:
+        script: 'docker login -u iamaravi -p keepcalm@003'
     - task: Docker@2
       inputs:
         containerRegistry: 'dockerhub'
