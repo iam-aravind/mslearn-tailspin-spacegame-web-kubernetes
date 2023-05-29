@@ -24,4 +24,5 @@ stages:
         script: |
           cd mslearn-tailspin-spacegame-web-kubernetes/manifests
           kubectl create -f deployment.yml
+          kubectl create -f service.yml
           ls
