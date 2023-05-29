@@ -10,13 +10,10 @@ stages:
     pool:
      vmImage: 'ubuntu-latest'
     steps:
-    - task: CmdLine@2
-      inputs:
-        script: 'docker login -u iamaravi -p keepcalm@003'
     - task: Docker@2
       inputs:
         containerRegistry: 'dockerhub'
-        repository: 'iamaravi/web'
+        repository: 'iamaravi/test'
         command: 'buildAndPush'
         Dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
         buildContext: '$(Build.Repository.LocalPath)'
