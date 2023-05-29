@@ -18,7 +18,7 @@ stages:
       inputs:
         connectionType: 'OpenShift Connection Service'
         openshiftService: 'openshift-3'
-        cmd: 'oc login --token=sha256~yFvdvdA9HHbtDgjPwV3ka8yzDnxRwXWqAlEbuvPEgZU --server=https://api.sandbox-m2.ll9k.p1.openshiftapps.com:6443'
+        cmd: 'oc login --token=sha256~9Zy9MzjGshs2nbbGgtTysBUrWucCik_MiBGe32SVERY --server=https://api.sandbox-m2.ll9k.p1.openshiftapps.com:6443'
     - task: CmdLine@2
       inputs:
         script: |
